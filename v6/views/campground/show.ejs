@@ -1,0 +1,69 @@
+<% include ../partials/header %>
+
+<div class="row" style="border: 3%">
+         <% if(campground.address) { %>
+        <div class="col-md-3 thriftstore-location">
+            <p><strong>Address:</strong><br>
+                <%= campground.address %>
+                    <!--  <br> <%= campground.city%>, <%=campground.state%> -->
+            </p>
+            <div class="google-map responsive-iframe responsive-iframe-4x3">
+                <iframe width="300" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAPzLdcKEPCe4SQf3-cdSnq5vmh_MRaHCs&q=<%= campground.address.replace(/ /g, '+') %> <%=campground.city%> <%=campground.state%>" allowfullscreen>
+                        </iframe>
+            </div>
+        </div>
+
+        <% } %>
+<div class="container">
+   
+      <div class="col-md-9 thrift-show">
+          <div class="thumbnail">
+             <img  class="img-responsive" src="<%= campground.image %>" >
+             <div class="caption-full">
+                <h4 class="pull-right">$<%=campground.price %>/night</h4>
+                <h4><a><%=campground.name %></a></h4>
+                <p><%= campground.description %></p>
+                <p><em>submitted by <%= campground.author.username %></em></p>
+                <span><%= campground.created.toDateString() %> </span>
+                <br>
+                <% if(currentUser && campground.author.id.equals(currentUser._id)){%>
+                <a class="btn btn-warning" href="/campgrounds/<%= campground._id %>/edit">edit</a>
+                <form id="deleteform" action="/campgrounds/<%=campground._id%>/delete?_method=DELETE" method="POST">
+                <button  class="btn btn-danger">delete</button>
+                </form>
+                <% } %>
+
+             </div>
+          </div>
+          <div class="well">
+              <div class="text-right">
+                  <a class="btn btn-success" href="/campgrounds/<%=campground._id%>/comments/new">add new comment</a>
+              </div>
+              <hr>
+              <% campground.comments.forEach(function(comment){%>
+                  <div class="row">
+                     <div class="col-md-12">
+                         <strong><%= comment.author.username %></strong>
+                         <span class="pull-right"><%= comment.created.toDateString() %> </span>
+                         <p><%= comment.text %></p>
+                         <%if(currentUser &&comment.author.id.equals(currentUser._id) ){%>
+                         <a class="btn btn-warning btn-xs" href="/campgrounds/<%= campground._id %>/comments/<%= comment._id%>/edit">edit</a>
+                         <form id="deleteform" action="/campgrounds/<%=campground._id%>/comments/<%=comment._id %>/delete?_method=DELETE" method="POST">
+                         <button  class="btn btn-danger btn-xs">delete</button>
+                         </form>
+                         <%}%>
+                     </div>
+                  </div>
+
+              <% }) %>
+          </div>
+      </div>
+   </div>
+</div>
+
+
+
+
+
+
+<% include ../partials/footer %>
